@@ -17,7 +17,12 @@ async function run(){
     try{
         await client.connect();
         const ItemCollection = client.db('inventoryManage').collection('items');
-
+        // post data
+        app.post('/items', async(req, res)=>{
+            const newItem = req.body;
+            const result = await ItemCollection.insertOne(newItem);
+            res.send(result);
+        })
         app.get("/items", async (req, res) => {
             const items = await ItemCollection.find({})/* .limit(6) */.toArray();
             res.send(items);
