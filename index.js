@@ -19,7 +19,7 @@ async function run(){
         const ItemCollection = client.db('inventoryManage').collection('items');
 
         app.get("/items", async (req, res) => {
-            const items = await ItemCollection.find({}).toArray();
+            const items = await ItemCollection.find({})/* .limit(6) */.toArray();
             res.send(items);
         });
         app.get('/items/:id', async(req, res)=>{
@@ -27,7 +27,27 @@ async function run(){
             const query = {_id: ObjectId(id)};
             const items = await ItemCollection.findOne(query);
             res.send(items)
-        })
+        });
+        // update user
+        app.put('/items/:id', async(req, res)=>{
+            const id = req.params.id;
+            const updateUser = req.body.quantity;
+            console.log(req.body.quantity)
+            const filter = { _id: ObjectId(id) };
+            const options = {upsert: true};
+            const updatedDoc = {
+                $set: { quantity: updateUser }
+            }
+            const result = await ItemCollection.updateOne(filter, updatedDoc, options);
+            res.send(result)
+        });
+        // delete a user
+        app.delete('/items/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await ItemCollection.deleteOne(query);
+            res.send(result)
+        });
     }
     finally{
         // await client.close();
