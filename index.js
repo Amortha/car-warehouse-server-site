@@ -45,10 +45,10 @@ async function run(){
             const updatedDoc = {
                 $set: { quantity: updateUser }
             }
+
             const result = await ItemCollection.updateOne(filter, updatedDoc, options);
             res.send(result)
         });
-        
         // delete a user
         app.delete('/items/:id', async(req, res)=>{
             const id = req.params.id;
